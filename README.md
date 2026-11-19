@@ -42,12 +42,14 @@ los estilos están embebidos en un único HTML de 2.9 MB.
 ## Estructura
 
 ```text
-app/index.html          Aplicación servible: mapa, datos, estilos y lógica
+app/index.html          Aplicación servible: mapa, datos, estilos y lógica (publicada)
 source/                 Generador de la demo y simulación
   simulation.py         Modelo determinista de corredores y envíos
   build_preview.py      Empaqueta la vista previa autocontenida
   world.geojson         Base geográfica del mundo
   requirements.txt
+scripts/                publicar.py · verificar_paridad.py
+tests/                  test_simulacion.py (invariantes del agregador)
 docs/LEEME.md           Documentación original del proyecto
 docs/cover.jpg          Captura real de la aplicación servida
 ```
@@ -55,10 +57,16 @@ docs/cover.jpg          Captura real de la aplicación servida
 ## Regenerar la demo
 
 ```bash
-cd source
-python -m pip install -r requirements.txt
-python build_preview.py
+# desde la raíz del repositorio
+python source/build_preview.py       # -> source/prototipo_local.html
+python scripts/publicar.py           # -> app/index.html (bytes y SHA-256)
+python scripts/verificar_paridad.py  # falla si la demo publicada difiere
+python -m pytest tests -q            # invariantes del agregador determinista
 ```
+
+El orden completo y qué produce cada paso están en
+[`scripts/README.md`](scripts/README.md). Las dependencias de
+`source/requirements.txt` solo hacen falta para la API local opcional.
 
 ## Límites
 
